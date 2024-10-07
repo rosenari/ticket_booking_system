@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  app:
+    image: python:3.11.6
+    volumes:
+      - ./app:/app
+    ports:
+      - "8000:8000"
+    entrypoint: bash
+    command: [ "-c", "pip install -r /app/requirements.txt && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"]
+    environment:
+      DATABASE_USER: "ticket"
+      DATABASE_PASSWORD: "devpassword"
+      DATABASE_HOST: "db"
+      DATABASE: "ticket"
+      TZ: Asia/Seoul
+    networks:
+      - ticket_network
+    restart: always
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: "ticket"
+      POSTGRES_USER: "ticket"
+      POSTGRES_PASSWORD: "devpassword"
+      POSTGRES_ROOT_PASSWORD: "devpassword"
+      TZ: Asia/Seoul
+    volumes:
+      - ./db/initdb.d:/docker-entrypoint-initdb.d
+      - ./db/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - ticket_network
+    restart: always
+
+
+networks:
+  ticket_network:

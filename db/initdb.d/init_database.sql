@@ -1,0 +1,2 @@
+CREATE DATABASE test_ticket;
+GRANT ALL PRIVILEGES ON DATABASE test_ticket TO "ticket";
